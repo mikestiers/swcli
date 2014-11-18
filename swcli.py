@@ -1,12 +1,13 @@
 import sqlite3
 import os
+import re
 
 ver = 0.1
 dbname = os.getenv("HOME")+'/Documents/spiceworks_prod - Copy.db'
 con = sqlite3.connect(dbname)
 cur = con.cursor()
-cur.execute("SELECT * FROM tickets WHERE id = '5'")
-data = cur.fetchall()
+#cur.execute("SELECT * FROM tickets WHERE id = '5'")
+#data = cur.fetchall()
 #print(data)
 
 # Command prompt
@@ -14,8 +15,8 @@ def getCommand():
     command = input("?>")
     if command == "q":
         quit()
-    if command == "t":
-        showTicket()
+    if int(command) >= 0:
+        showTicket(command)
     if command == "d":
         showDue()
     else:
@@ -33,7 +34,9 @@ def cliHelp():
     return
 
 # Display specific ticket information
-def showTicket():
+def showTicket(command):
+    cur.execute("SELECT id, priority, closed_at FROM tickets WHERE id =?", command)
+    data = cur.fetchone()
     print(data)
     getCommand()
     return
