@@ -6,6 +6,8 @@ ver = 0.1
 dbname = os.getenv("HOME")+'/Documents/spiceworks_prod - Copy.db'
 con = sqlite3.connect(dbname)
 cur = con.cursor()
+ticketNo = int
+
 #cur.execute("SELECT * FROM tickets WHERE id = '5'")
 #data = cur.fetchall()
 #print(data)
@@ -15,6 +17,8 @@ def getCommand():
     command = input("?>")
     if command == "q":
         quit()
+    if command == "t":
+        ticketMenu()
     if int(command) >= 0:
         showTicket(command)
     if command == "d":
@@ -22,10 +26,16 @@ def getCommand():
     else:
         getCommand()
 
+# Ticket menu
+def ticketMenu():
+    ticketNo = input("ticket?>")
+    showTicket(ticketNo)
+
 # Display interactive help menu
 def interHelp():
     print("Spiceworks Command Line Interface v", ver)
-    print("(q) = quit")
+    print("(t)icket menu")
+    print("(q)uit")
     return
 
 # Display command line help    
@@ -34,10 +44,16 @@ def cliHelp():
     return
 
 # Display specific ticket information
-def showTicket(command):
-    cur.execute("SELECT id, priority, closed_at FROM tickets WHERE id =?", command)
+def showTicket(ticketNo):
+    cur.execute("SELECT id, assigned_to, created_by, priority, closed_at, status, summary FROM tickets WHERE id =(?)", (ticketNo,))
     data = cur.fetchone()
-    print(data)
+    print("ID: ",data[0])
+    print("Assigned to: ",data[1])
+    print("Created by: ",data[2])
+    print("Priority: ",data[3])
+    print("Closed at: ",data[4])
+    print("Status: ",data[5])
+    print("Summary: ",data[6])
     getCommand()
     return
 
@@ -50,9 +66,7 @@ def quit():
     cur.close()
     print("later")
     raise SystemExit # or sys.exit().  what is the difference?
-    
-    
-        
+
 interHelp()
-cliHelp()
 getCommand()
+
