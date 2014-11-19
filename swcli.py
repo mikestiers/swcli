@@ -19,8 +19,6 @@ def getCommand():
         quit()
     if command == "t":
         ticketMenu()
-    if int(command) >= 0:
-        showTicket(command)
     if command == "d":
         showDue()
     else:
@@ -45,16 +43,22 @@ def cliHelp():
 
 # Display specific ticket information
 def showTicket(ticketNo):
+    # print(ticketNo)
+    # print(type(ticketNo))
     cur.execute("SELECT id, assigned_to, created_by, priority, closed_at, status, summary FROM tickets WHERE id =(?)", (ticketNo,))
     data = cur.fetchone()
-    print("ID: ",data[0])
-    print("Assigned to: ",data[1])
-    print("Created by: ",data[2])
-    print("Priority: ",data[3])
-    print("Closed at: ",data[4])
-    print("Status: ",data[5])
-    print("Summary: ",data[6])
-    getCommand()
+    # print(data)
+    if data == None:
+        ticketMenu()
+    else:
+        print("ID: ",data[0])
+        print("Assigned to: ",data[1])
+        print("Created by: ",data[2])
+        print("Priority: ",data[3])
+        print("Closed at: ",data[4])
+        print("Status: ",data[5])
+        print("Summary: ",data[6])
+        ticketMenu()
     return
 
 # Display tickets due
